@@ -69,6 +69,15 @@ func (d *decoderV1) stateAt(addr int, prealloc fstState) (fstState, error) {
 	return state, nil
 }
 
+func (d *decoderV1) stateAtNoAlloc(addr int) (fstStateV1, error) {
+	var state fstStateV1
+	err := state.at(d.data, addr)
+	if err != nil {
+		return state, err
+	}
+	return state, nil
+}
+
 type fstStateV1 struct {
 	data     []byte
 	top      int

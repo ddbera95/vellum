@@ -160,7 +160,7 @@ func (f *FST) Accept(addr int, b byte) int {
 // IsMatchWithVal returns if this state is a matching state in this Automaton
 // and also returns the final output value for this state
 func (f *FST) IsMatchWithVal(addr int) (bool, uint64) {
-	s, err := f.decoder.stateAt(addr, nil)
+	s, err := f.decoder.stateAtNoAlloc(addr)
 	if err != nil {
 		return false, 0
 	}
@@ -170,7 +170,7 @@ func (f *FST) IsMatchWithVal(addr int) (bool, uint64) {
 // AcceptWithVal returns the next state for this Automaton on input of byte b
 // and also returns the output value for the transition
 func (f *FST) AcceptWithVal(addr int, b byte) (int, uint64) {
-	s, err := f.decoder.stateAt(addr, nil)
+	s, err := f.decoder.stateAtNoAlloc(addr)
 	if err != nil {
 		return noneAddr, 0
 	}

@@ -50,6 +50,7 @@ type decoder interface {
 	getRoot() int
 	getLen() int
 	stateAt(addr int, prealloc fstState) (fstState, error)
+	stateAtNoAlloc(addr int) (fstStateV1, error)
 }
 
 func loadDecoder(ver int, data []byte) (decoder, error) {
