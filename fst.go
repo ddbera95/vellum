@@ -178,6 +178,35 @@ func (f *FST) AcceptWithVal(addr int, b byte) (int, uint64) {
 	return next, output
 }
 
+type FSTRunner struct {
+	fst *FST
+	prealloc fstState
+}
+
+func (f *FST) Runner() (*FSTRunner, error) {
+	return &FSTRunner { f, nil }, nil
+}
+
+func (r *FSTRunner) AcceptWithVal(addr int, b byte) (int, uint64) {
+	s, err := r.fst.decoder.stateAt(addr, r.prealloc)
+	r.prealloc = s
+	if err != nil {
+		return noneAddr, 0
+	}
+	_, next, output := s.TransitionFor(b)
+	return next, output
+}
+
+func (r *FSTRunner) IsMatchWithVal(addr int) (bool, uint64) {
+	s, err := r.fst.decoder.stateAt(addr, r.prealloc)
+	r.prealloc = s
+	if err != nil {
+		return false, 0
+	}
+	return s.Final(), s.FinalOutput()
+}
+
+
 // Iterator returns a new Iterator capable of enumerating the key/value pairs
 // between the provided startKeyInclusive and endKeyExclusive.
 func (f *FST) Iterator(startKeyInclusive, endKeyExclusive []byte) (*FSTIterator, error) {
